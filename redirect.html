@@ -3,22 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <title>Doorsturen...</title>
-  <script>
-    fetch("url.txt")
-      .then(response => response.text())
-      .then(url => {
-        if (/^https?:\/\//.test(url)) {
-          window.location.href = url.trim();
-        } else {
-          document.body.innerText = "Geen geldige URL gevonden.";
-        }
-      })
-      .catch(error => {
-        document.body.innerText = "Fout bij het ophalen van de URL.";
-      });
-  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
   <p>Bezig met doorsturen...</p>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJR8GAP03MKt3uicv0CbAQzv7zWdyj9hQ",
+      authDomain: "doorsturen-e2db5.firebaseapp.com",
+      databaseURL: "https://doorsturen-e2db5-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "doorsturen-e2db5"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref("link").once("value").then(snapshot => {
+      const url = snapshot.val();
+      if (/^https?:\/\//.test(url)) {
+        window.location.href = url;
+      } else {
+        document.body.innerText = "Geen geldige link gevonden.";
+      }
+    }).catch(() => {
+      document.body.innerText = "Fout bij het ophalen van de link.";
+    });
+  </script>
 </body>
 </html>
