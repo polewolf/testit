@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Doorsturen...</title>
+  <script>
+    fetch("url.txt")
+      .then(response => response.text())
+      .then(url => {
+        if (/^https?:\/\//.test(url)) {
+          window.location.href = url.trim();
+        } else {
+          document.body.innerText = "Geen geldige URL gevonden.";
+        }
+      })
+      .catch(error => {
+        document.body.innerText = "Fout bij het ophalen van de URL.";
+      });
+  </script>
+</head>
+<body>
+  <p>Bezig met doorsturen...</p>
+</body>
+</html>
