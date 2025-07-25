@@ -2,19 +2,17 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Login / Link instellen</title>
+  <title>Link instellen (met login)</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
   <div id="login">
-    <h2>Login / Registreren</h2>
-    <input type="email" id="email" placeholder="E-mail">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="E-mailadres">
     <input type="password" id="password" placeholder="Wachtwoord">
-    <br>
     <button onclick="login()">Inloggen</button>
-    <button onclick="register()">Registreren</button>
     <p id="loginStatus"></p>
   </div>
 
@@ -28,62 +26,40 @@
 
   <script>
     const firebaseConfig = {
-      apiKey: "API",
-      authDomain: "AUTH_DOMAIN",
-      databaseURL: "DATABASE_URL",
-      projectId: "PROJECT_ID"
+      apiKey: "JOUW_API_KEY",
+      authDomain: "JOUW_AUTH_DOMAIN",
+      databaseURL: "JOUW_DATABASE_URL",
+      projectId: "JOUW_PROJECT_ID"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
-    auth.onAuthStateChanged(async user => {
-      if (!user) return;
-
-      const snapshot = await db.ref("users/" + user.uid).once("value");
-
-      if (!snapshot.exists()) {
-        // Nieuw account: sla op met "approved: false"
-        await db.ref("users/" + user.uid).set({
-          email: user.email,
-          approved: false
-        });
-        document.getElementById("loginStatus").innerText = "Account geregistreerd. Wacht op goedkeuring.";
-        auth.signOut();
-        return;
-      }
-
-      const approved = snapshot.val().approved;
-      if (approved) {
+    auth.onAuthStateChanged(user => {
+      if (user) {
         document.getElementById("login").style.display = "none";
         document.getElementById("app").style.display = "block";
       } else {
-        document.getElementById("loginStatus").innerText = "Je account is nog niet goedgekeurd.";
-        auth.signOut();
+        document.getElementById("login").style.display = "block";
+        document.getElementById("app").style.display = "none";
       }
     });
 
     function login() {
       const email = document.getElementById("email").value;
       const pass = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email, pass)
-        .catch(() => {
+      firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then(() => {
+          document.getElementById("loginStatus").innerText = "Ingelogd!";
+        })
+        .catch(err => {
           document.getElementById("loginStatus").innerText = "Login mislukt.";
         });
     }
 
-    function register() {
-      const email = document.getElementById("email").value;
-      const pass = document.getElementById("password").value;
-      auth.createUserWithEmailAndPassword(email, pass)
-        .catch(() => {
-          document.getElementById("loginStatus").innerText = "Registratie mislukt.";
-        });
-    }
-
     function logout() {
-      auth.signOut();
+      firebase.auth().signOut();
     }
 
     function opslaan() {
