@@ -2,27 +2,15 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Link instellen (met login)</title>
+  <title>Link instellen</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
-  <div id="login">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="E-mailadres">
-    <input type="password" id="password" placeholder="Wachtwoord">
-    <button onclick="login()">Inloggen</button>
-    <p id="loginStatus"></p>
-  </div>
-
-  <div id="app" style="display:none">
-    <h2>Link instellen</h2>
-    <input type="url" id="link" placeholder="https://voorbeeld.nl">
-    <button onclick="opslaan()">Opslaan</button>
-    <p id="status"></p>
-    <button onclick="logout()">Uitloggen</button>
-  </div>
+  <h2>Stel een nieuwe link in:</h2>
+  <input type="url" id="link" placeholder="https://voorbeeld.nl" required>
+  <button onclick="opslaan()">Opslaan</button>
+  <p id="status"></p>
 
   <script>
     const firebaseConfig = {
@@ -33,34 +21,7 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.database();
-
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("app").style.display = "block";
-      } else {
-        document.getElementById("login").style.display = "block";
-        document.getElementById("app").style.display = "none";
-      }
-    });
-
-    function login() {
-      const email = document.getElementById("email").value;
-      const pass = document.getElementById("password").value;
-      firebase.auth().signInWithEmailAndPassword(email, pass)
-        .then(() => {
-          document.getElementById("loginStatus").innerText = "Ingelogd!";
-        })
-        .catch(err => {
-          document.getElementById("loginStatus").innerText = "Login mislukt.";
-        });
-    }
-
-    function logout() {
-      firebase.auth().signOut();
-    }
 
     function opslaan() {
       const url = document.getElementById("link").value;
@@ -69,13 +30,11 @@
         return;
       }
 
-      db.ref("link").set(url)
-        .then(() => {
-          document.getElementById("status").innerText = "Link opgeslagen!";
-        })
-        .catch(() => {
-          document.getElementById("status").innerText = "Fout bij opslaan.";
-        });
+      db.ref("link").set(url).then(() => {
+        document.getElementById("status").innerText = "Link opgeslagen!";
+      }).catch(() => {
+        document.getElementById("status").innerText = "Fout bij opslaan.";
+      });
     }
   </script>
 </body>
