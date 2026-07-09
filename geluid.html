@@ -2,13 +2,32 @@
 <html>
 <head>
   <title>Geluid afspelen</title>
+  <style>
+  html{
+    height: 99%;
+  }
+  body{
+    height: 99%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  button{
+    color:#fff;
+    background-color:#000;
+    border-radius: 360px;
+    width: 100%;
+    height: 50%;
+    font-size: 50px;
+  }
+  </style>
 </head>
 <body>
   <button onclick="speelGeluid()">Speel geluid af</button>
 
   <script>
     function speelGeluid() {
-      const audio = new Audio('https://github.com/polewolf/testit/raw/refs/heads/main/vine-boom.mp3'); // Vervang dit met het pad naar jouw geluidsbestand
+      const audio = new Audio('https://github.com/polewolf/testit/raw/refs/heads/main/vine-boom.mp3'); 
       audio.play();
     }
   </script>
